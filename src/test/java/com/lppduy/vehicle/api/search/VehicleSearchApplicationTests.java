@@ -1,4 +1,4 @@
-package com.lppduy.vehiclesearch;
+package com.lppduy.vehicle.api.search;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
