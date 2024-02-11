@@ -27,4 +27,10 @@ public class ManufacturerController {
         List<Manufacturer> savedManufacturers = manufacturerService.fetchAllManufacturers();
         return ResponseEntity.status(HttpStatus.OK).body(savedManufacturers);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Manufacturer> getManufacturerBasedOnId(@PathVariable int id) {
+        Manufacturer dbManufacturer = manufacturerService.getManufacturerForId(id);
+        return ResponseEntity.ok(dbManufacturer);
+    }
 }
