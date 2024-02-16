@@ -2,10 +2,14 @@ package com.lppduy.vehicle.api.search.controller;
 
 import com.lppduy.vehicle.api.search.entity.Manufacturer;
 import com.lppduy.vehicle.api.search.exception.ManufacturerNotFoundException;
+import com.lppduy.vehicle.api.search.exception.MissingFieldException;
 import com.lppduy.vehicle.api.search.service.ManufacturerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +40,22 @@ public class ManufacturerController {
             throw new ManufacturerNotFoundException("No manufacturer found for ID-"+id);
         }
         return ResponseEntity.ok(dbManufacturer);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Manufacturer> updateManufacturer(
+            @PathVariable int id,
+            @Valid @RequestBody Manufacturer manufacturer,
+            BindingResult result
+    ) throws ManufacturerNotFoundException, MissingFieldException {
+        if (result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            throw new MissingFieldException(errors.get(0).getDefaultMessage());
+        }
+        Manufacturer updatedManufacturer = manufacturerService.updateManufacturer(id, manufacturer);
+        if (updatedManufacturer == null) {
+            throw new ManufacturerNotFoundException("No manufacturer found for ID-"+id);
+        }
+        return new ResponseEntity<>(updatedManufacturer, HttpStatus.OK);
     }
 }
